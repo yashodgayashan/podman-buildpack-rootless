@@ -27,6 +27,8 @@ RUN mkdir -p /run/user/1000 && chown -R tektonuser:tektonuser /run/user/1000
 
 RUN mkdir -p /home/tekton/.run/user/1000 && chown -R tektonuser:tektonuser /home/tekton/.run/user/1000
 
+RUN mkdir -p /home/tekton/.run/user/1000/libpod && chown -R tektonuser:tektonuser /home/tekton/.run/user/1000/libpod
+
 # Ensure correct permissions for Podman storage directories
 RUN mkdir -p /home/tekton/.local/share/containers && chown -R tektonuser:tektonuser /home/tekton/.local/share/containers
 
