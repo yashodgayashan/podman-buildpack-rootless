@@ -25,6 +25,8 @@ RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 # Create the necessary runtime directory and set ownership
 RUN mkdir -p /run/user/1000 && chown -R tektonuser:tektonuser /run/user/1000
 
+RUN mkdir -p /home/tekton/.run/user/1000 && chown -R tektonuser:tektonuser /home/tekton/.run/user/1000
+
 # Ensure correct permissions for Podman storage directories
 RUN mkdir -p /home/tekton/.local/share/containers && chown -R tektonuser:tektonuser /home/tekton/.local/share/containers
 
