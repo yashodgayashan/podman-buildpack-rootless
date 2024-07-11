@@ -16,7 +16,6 @@ COPY --from=builder /usr/bin/pack /usr/bin/pack
 # Set unqualified search registry (optional)
 RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf
 
-
 # Create a non-root user and home directory
 RUN useradd -m tektonuser
 
@@ -27,7 +26,7 @@ RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 RUN dnf install -y fuse-overlayfs slirp4netns
 
 # Switch to the target user with reduced privileges
-# USER 1000
+USER tektonuser
 
 # Working directory for Tekton
 WORKDIR /home/tekton
