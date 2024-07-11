@@ -33,4 +33,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/podman-nonroot:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_USER }}/podman-custom-buildpacks-rootless:${{ github.sha }}

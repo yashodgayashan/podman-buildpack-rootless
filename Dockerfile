@@ -16,27 +16,18 @@ COPY --from=builder /usr/bin/pack /usr/bin/pack
 # Set unqualified search registry (optional)
 RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf
 
+
 # Create a non-root user and home directory
 RUN useradd -m tektonuser
 
 # Create the working directory and set ownership
 RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 
-# Create the necessary runtime directory and set ownership
-RUN mkdir -p /run/user/1000 && chown -R tektonuser:tektonuser /run/user/1000
-
-RUN mkdir -p /home/tekton/.run/user/1000 && chown -R tektonuser:tektonuser /home/tekton/.run/user/1000
-
-RUN mkdir -p /home/tekton/.run/user/1000/libpod && chown -R tektonuser:tektonuser /home/tekton/.run/user/1000/libpod
-
-# Ensure correct permissions for Podman storage directories
-RUN mkdir -p /home/tekton/.local/share/containers && chown -R tektonuser:tektonuser /home/tekton/.local/share/containers
-
 # Install necessary packages for rootless Podman
 RUN dnf install -y fuse-overlayfs slirp4netns
 
 # Switch to the target user with reduced privileges
-USER tektonuser
+# USER 1000
 
 # Working directory for Tekton
 WORKDIR /home/tekton
