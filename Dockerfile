@@ -26,7 +26,7 @@ RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 RUN dnf install -y fuse-overlayfs slirp4netns
 
 # Switch to the target user with reduced privileges
-USER tektonuser
+# USER tektonuser
 
 # Working directory for Tekton
 WORKDIR /home/tekton
