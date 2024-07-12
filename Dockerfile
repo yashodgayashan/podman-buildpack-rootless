@@ -25,7 +25,7 @@ RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 # Install necessary packages for rootless Podman
 RUN dnf install -y fuse-overlayfs slirp4netns
 
-RUN mkdir -p /etc/containers && echo '[containers]\napparmor_profile = "unconfined"' > /etc/containers/containers.conf
+RUN mkdir -p /etc/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
 
 # Switch to the target user with reduced privileges
 USER 1000
