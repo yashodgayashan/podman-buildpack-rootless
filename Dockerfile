@@ -23,28 +23,11 @@ RUN useradd -m tektonuser
 RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 
 # Install necessary packages for rootless Podman
-RUN dnf install -y fuse-overlayfs slirp4netns
-
-# Add custom storage configuration
-RUN mkdir -p /home/tekton/.config/containers && \
-    echo '[storage]' > /home/tekton/.config/containers/storage.conf && \
-    echo '  driver = "overlay"' >> /home/tekton/.config/containers/storage.conf && \
-    echo '  graphroot = "/tmp/storage"' >> /home/tekton/.config/containers/storage.conf && \
-    echo '  runroot = "/tmp/run"' >> /home/tekton/.config/containers/storage.conf && \
-    echo '  [storage.options]' >> /home/tekton/.config/containers/storage.conf && \
-    echo '    mount_program = "/usr/bin/fuse-overlayfs"' >> /home/tekton/.config/containers/storage.conf && \
-    chown -R tektonuser:tektonuser /home/tekton/.config
-
-# Ensure storage paths are created and writable
-RUN mkdir -p /tmp/storage /tmp/run && \
-    chown -R tektonuser:tektonuser /tmp/storage /tmp/run
+RUN dnf install -y fuse-overlayfs slirp4netns 
 
 # Switch to the target user with reduced privileges
-USER tektonuser
+USER 1000
 
 # Working directory for Tekton
 WORKDIR /home/tekton
 
-# Set environment variables
-ENV STORAGE_DRIVER=overlay
-ENV STORAGE_CONF=/home/tekton/.config/containers/storage.conf
