@@ -24,11 +24,11 @@ RUN mkdir -p /home/podman && chown -R podman:podman /home/podman
 
 RUN sed -i 's|graphroot = "/var/lib/containers/storage"|graphroot = "/home/podman/.local/share/containers/storage"|' /etc/containers/storage.conf
 
-# RUN mkdir -p /home/podman/.local/share/containers/storage/overlay
-# RUN mkdir -p /home/podman/.local/share/containers/storage/libpod
-# RUN chmod 666 /home/podman/.local/share/containers/storage/libpod
-# RUN chmod 666 /home/podman/.local/share/containers/storage/overlay
-# RUN chown -R podman:podman /home/podman
+RUN mkdir -p /home/podman/.local/share/containers/storage/overlay
+RUN mkdir -p /home/podman/.local/share/containers/storage/libpod
+RUN chmod 666 /home/podman/.local/share/containers/storage/libpod
+RUN chmod 777 /home/podman/.local/share/containers/storage/overlay
+RUN chown -R podman:podman /home/podman
 
 RUN cat /etc/containers/storage.conf
 
