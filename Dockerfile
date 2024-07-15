@@ -21,6 +21,7 @@ RUN useradd -m tektonuser
 
 # Create the working directory and set ownership
 RUN mkdir -p /home/podman && chown -R podman:podman /home/podman
+RUN chmod 666 /home/podman/.local/share/containers/storage/overlay
 
 # Install necessary packages for rootless Podman
 RUN dnf install -y fuse-overlayfs slirp4netns
