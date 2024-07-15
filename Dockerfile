@@ -20,16 +20,16 @@ RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/regis
 RUN useradd -m tektonuser
 
 # Create the working directory and set ownership
-RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
+RUN mkdir -p /home/podman && chown -R podman:podman /home/podman
 
 # Install necessary packages for rootless Podman
 RUN dnf install -y fuse-overlayfs slirp4netns
 
 RUN mkdir -p /etc/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
-RUN mkdir -p /etc/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > $HOME/.config/containers/containers.conf
+RUN mkdir -p /home/podman/.config/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /home/podman/.config/containers/containers.conf
 
 # Switch to the target user with reduced privileges
 USER 1000
 
 # Working directory for Tekton
-WORKDIR /home/tekton
+WORKDIR /home/podman
