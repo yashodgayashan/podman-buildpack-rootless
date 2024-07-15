@@ -27,6 +27,7 @@ RUN dnf install -y fuse-overlayfs slirp4netns
 
 RUN mkdir -p /etc/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
 RUN mkdir -p /home/podman/.config/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /home/podman/.config/containers/containers.conf
+RUN mkdir -p /usr/share/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /usr/share/containers/containers.conf
 
 # Switch to the target user with reduced privileges
 USER 1000
