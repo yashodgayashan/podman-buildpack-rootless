@@ -16,7 +16,7 @@ COPY --from=builder /usr/bin/pack /usr/bin/pack
 # Set unqualified search registry (optional)
 RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf
 
-RUN apk update && apk add --no-cache shadow
+# RUN apk update && apk add --no-cache shadow
 
 # Create a non-root user and home directory
 # RUN useradd -m tektonuser
@@ -28,7 +28,7 @@ RUN apk update && apk add --no-cache shadow
 # RUN dnf install -y fuse-overlayfs slirp4netns 
 
 # Switch to the target user with reduced privileges
-USER 1000
+# USER 1000
 
 # Working directory for Tekton
-WORKDIR /home/podman
+# WORKDIR /home/podman
