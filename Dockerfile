@@ -25,6 +25,7 @@ RUN mkdir -p /home/podman/.local/share/containers/storage/overlay
 RUN mkdir -p /home/podman/.local/share/containers/storage/libpod
 RUN chmod 666 /home/podman/.local/share/containers/storage/libpod
 RUN chmod 666 /home/podman/.local/share/containers/storage/overlay
+RUN chown -R podman:podman /home/podman
 
 RUN cat /etc/containers/storage.conf
 
