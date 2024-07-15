@@ -40,7 +40,7 @@ RUN mkdir -p /home/podman/.config/containers && printf '[containers]\napparmor_p
 RUN mkdir -p /usr/share/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /usr/share/containers/containers.conf
 
 # Switch to the target user with reduced privileges
-USER 1001
+USER 1000
 
 # Working directory for Tekton
 WORKDIR /home/podman
