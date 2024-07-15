@@ -22,6 +22,8 @@ RUN useradd -m tektonuser
 # Create the working directory and set ownership
 RUN mkdir -p /home/podman && chown -R podman:podman /home/podman
 RUN mkdir -p /home/podman/.local/share/containers/storage/overlay
+RUN mkdir -p /home/podman/.local/share/containers/storage/libpod
+RUN chmod 666 /home/podman/.local/share/containers/storage/libpod
 RUN chmod 666 /home/podman/.local/share/containers/storage/overlay
 
 RUN cat /etc/containers/storage.conf
