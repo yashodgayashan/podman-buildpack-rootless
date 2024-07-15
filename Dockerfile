@@ -26,6 +26,7 @@ RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 RUN dnf install -y fuse-overlayfs slirp4netns
 
 RUN mkdir -p /etc/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
+RUN mkdir -p /etc/containers && printf '[containers]\napparmor_profile = "unconfined"\n' > $HOME/.config/containers/containers.conf
 
 # Switch to the target user with reduced privileges
 USER 1000
