@@ -1,36 +1,35 @@
-# Use an official Fedora base image
-FROM fedora:latest
+# Use an official minimal image as a base
+FROM alpine:latest
 
-# Install Podman and other necessary tools
-RUN dnf -y update && \
-    dnf -y install podman fuse-overlayfs slirp4netns shadow-utils
+# Install necessary packages
+RUN apk update && apk add --no-cache \
+    podman \
+    fuse-overlayfs \
+    shadow \
+    && rm -rf /var/cache/apk/*
 
 # Create a non-root user and group
-RUN groupadd -r mygroup && useradd -r -g mygroup -m -d /home/myuser myuser
+RUN groupadd -g 1000 podmanuser && \
+    useradd -u 1000 -g podmanuser -m -s /bin/sh podmanuser
+
+# Configure Podman for rootless mode
+RUN mkdir -p /etc/containers && \
+    echo "[registries.search]" > /etc/containers/registries.conf && \
+    echo "registries = ['docker.io']" >> /etc/containers/registries.conf
 
 # Switch to the non-root user
-USER myuser
-ENV HOME /home/myuser
+USER podmanuser
 
-# Set up environment for rootless Podman
-RUN mkdir -p $HOME/.local/share/containers/storage && \
-    mkdir -p $HOME/.config/containers && \
-    echo -e "[engine]\ncgroup_manager = \"cgroupfs\"\nevents_logger = \"file\"\n" > $HOME/.config/containers/containers.conf
+# Create necessary directories and set up environment
+RUN mkdir -p ~/.config/containers && \
+    echo "[containers]" > ~/.config/containers/containers.conf && \
+    echo "netns=true" >> ~/.config/containers/containers.conf
 
-RUN podman info
+# Expose default ports if needed (adjust as necessary)
+EXPOSE 8080
 
-# Set up directories and environment variables
-RUN mkdir -p /run/user/1000 && chmod 700 /run/user/1000
-ENV XDG_RUNTIME_DIR=/run/user/1000 \
-    STORAGE_DRIVER=overlay
-
-# Ensure that slirp4netns and fuse-overlayfs are set correctly
-RUN echo -e "[[runtimes]]\nname = \"slirp4netns\"\npath = \"/usr/bin/slirp4netns\"\n" >> $HOME/.config/containers/containers.conf && \
-    echo -e "[storage.options]\nmount_program = \"/usr/bin/fuse-overlayfs\"\n" >> $HOME/.config/containers/storage.conf
-
-# Set the working directory
-WORKDIR $HOME
-
-# Entry point to start Podman in rootless mode
+# Set the entrypoint to podman
 ENTRYPOINT ["podman"]
+
+# Default command to run in rootless mode
 CMD ["--help"]
