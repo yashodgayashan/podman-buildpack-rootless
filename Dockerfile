@@ -17,6 +17,8 @@ RUN mkdir -p $HOME/.local/share/containers/storage && \
     mkdir -p $HOME/.config/containers && \
     echo -e "[engine]\ncgroup_manager = \"cgroupfs\"\nevents_logger = \"file\"\n" > $HOME/.config/containers/containers.conf
 
+RUN podman info
+
 # Set up directories and environment variables
 RUN mkdir -p /run/user/1000 && chmod 700 /run/user/1000
 ENV XDG_RUNTIME_DIR=/run/user/1000 \
