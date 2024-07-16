@@ -23,7 +23,7 @@ USER 1000:1000
 # Create necessary directories and set up environment
 RUN mkdir -p /home/podmanuser/.config/containers && \
     echo "[containers]" > /home/podmanuser/.config/containers/containers.conf && \
-    echo "netns=true" >> /home/podmanuser/.config/containers/containers.conf
+    echo "netns='bridge'" >> /home/podmanuser/.config/containers/containers.conf
 
 # Expose default ports if needed (adjust as necessary)
 EXPOSE 8080
