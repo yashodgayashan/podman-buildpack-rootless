@@ -1,34 +1,20 @@
-# Stage 1: Build environment (Debian/Ubuntu as an example)
-FROM ubuntu:latest AS builder
+# Use an appropriate base image
+FROM fedora:latest
 
-# Update package lists and install required packages
-RUN apt-get update && apt-get install -y software-properties-common
+# Install Podman
+RUN dnf -y update && \
+    dnf -y install podman
 
-# Update package lists and install pack
-RUN add-apt-repository ppa:cncf-buildpacks/pack-cli
-RUN apt-get update
-RUN apt-get install pack-cli
+# Create a user for running Podman rootless
+RUN useradd -ms /bin/bash podmanuser
 
-FROM mgoltzsche/podman:latest
+# Switch to the new user
+USER podmanuser
 
-COPY --from=builder /usr/bin/pack /usr/bin/pack
+# Set up environment for rootless Podman
+ENV XDG_RUNTIME_DIR=/tmp/run
+RUN mkdir -p /tmp/run && \
+    podman system migrate
 
-# Set unqualified search registry (optional)
-RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf
-
-# RUN apk update && apk add --no-cache shadow
-
-# Create a non-root user and home directory
-# RUN useradd -m tektonuser
-
-# Create the working directory and set ownership
-# RUN mkdir -p /home/podman && chown -R tektonuser:tektonuser /home/tekton
-
-# # Install necessary packages for rootless Podman
-# RUN dnf install -y fuse-overlayfs slirp4netns 
-
-# Switch to the target user with reduced privileges
-# USER 1000
-
-# Working directory for Tekton
-# WORKDIR /home/podman
+# Entry point
+ENTRYPOINT ["/usr/bin/podman"]
