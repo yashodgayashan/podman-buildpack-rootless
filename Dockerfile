@@ -8,7 +8,7 @@ RUN apk update && apk add --no-cache \
     shadow \
     && rm -rf /var/cache/apk/*
 
-# Create a non-root user and group
+# Create a non-root user and group with specific IDs
 RUN groupadd -g 1000 podmanuser && \
     useradd -u 1000 -g podmanuser -m -s /bin/sh podmanuser
 
@@ -17,13 +17,13 @@ RUN mkdir -p /etc/containers && \
     echo "[registries.search]" > /etc/containers/registries.conf && \
     echo "registries = ['docker.io']" >> /etc/containers/registries.conf
 
-# Switch to the non-root user
-USER podmanuser
+# Set the entrypoint to podman and set environment variables
+USER 1000:1000
 
 # Create necessary directories and set up environment
-RUN mkdir -p ~/.config/containers && \
-    echo "[containers]" > ~/.config/containers/containers.conf && \
-    echo "netns=true" >> ~/.config/containers/containers.conf
+RUN mkdir -p /home/podmanuser/.config/containers && \
+    echo "[containers]" > /home/podmanuser/.config/containers/containers.conf && \
+    echo "netns=true" >> /home/podmanuser/.config/containers/containers.conf
 
 # Expose default ports if needed (adjust as necessary)
 EXPOSE 8080
