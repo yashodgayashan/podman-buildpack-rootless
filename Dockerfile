@@ -1,35 +1,33 @@
-# Use an official minimal image as a base
-FROM alpine:latest
+# Stage 1: Build environment (Debian/Ubuntu as an example)
+FROM ubuntu:latest AS builder
 
-# Install necessary packages
-RUN apk update && apk add --no-cache \
-    podman \
-    fuse-overlayfs \
-    shadow \
-    && rm -rf /var/cache/apk/*
+# Update package lists and install required packages
+RUN apt-get update && apt-get install -y software-properties-common
 
-# Create a non-root user and group with specific IDs
-RUN groupadd -g 1000 podmanuser && \
-    useradd -u 1000 -g podmanuser -m -s /bin/sh podmanuser
+# Update package lists and install pack
+RUN add-apt-repository ppa:cncf-buildpacks/pack-cli
+RUN apt-get update
+RUN apt-get install pack-cli
 
-# Configure Podman for rootless mode
-RUN mkdir -p /etc/containers && \
-    echo "[registries.search]" > /etc/containers/registries.conf && \
-    echo "registries = ['docker.io']" >> /etc/containers/registries.conf
+FROM quay.io/podman/stable:latest
 
-# Set the entrypoint to podman and set environment variables
-USER 1000:1000
+COPY --from=builder /usr/bin/pack /usr/bin/pack
 
-# Create necessary directories and set up environment
-RUN mkdir -p /home/podmanuser/.config/containers && \
-    echo "[containers]" > /home/podmanuser/.config/containers/containers.conf && \
-    echo "netns='bridge'" >> /home/podmanuser/.config/containers/containers.conf
+# Set unqualified search registry (optional)
+RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf
 
-# Expose default ports if needed (adjust as necessary)
-EXPOSE 8080
+# Create a non-root user and home directory
+RUN useradd -m tektonuser
 
-# Set the entrypoint to podman
-ENTRYPOINT ["podman"]
+# Create the working directory and set ownership
+RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 
-# Default command to run in rootless mode
-CMD ["--help"]
+# Install necessary packages for rootless Podman
+RUN dnf install -y fuse-overlayfs slirp4netns 
+
+# Switch to the target user with reduced privileges
+USER 1000
+
+# Working directory for Tekton
+WORKDIR /home/tekton
+
