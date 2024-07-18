@@ -26,7 +26,7 @@ RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
 RUN dnf install -y fuse-overlayfs slirp4netns 
 
 RUN mkdir -p /etc/containers && \
-    printf '[containers]\nannotations = ["container.apparmor.security.beta.kubernetes.io/kubepodcreation=unconfined"]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
+    printf '[containers]\nannotations = ["container.apparmor.security.beta.kubernetes.io/step-run-podman=unconfined"]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
 
 
 # Switch to the target user with reduced privileges
