@@ -16,23 +16,7 @@ COPY --from=builder /usr/bin/pack /usr/bin/pack
 # Set unqualified search registry (optional)
 RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf
 
-# Create a non-root user and home directory
-RUN useradd -m tektonuser
-
-# Create the working directory and set ownership
-RUN mkdir -p /home/tekton && chown -R tektonuser:tektonuser /home/tekton
-
 # Install necessary packages for rootless Podman
 RUN dnf install -y fuse-overlayfs slirp4netns 
-RUN dnf install -y https://kojipkgs.fedoraproject.org//packages/crun/1.8.7/1.fc38/x86_64/crun-1.8.7-1.fc38.x86_64.rpm
 
-# RUN mkdir -p /etc/containers && \
-#     printf '[containers]\nannotations = ["container.apparmor.security.beta.kubernetes.io/step-run-podman=unconfined"]\napparmor_profile = "unconfined"\n' > /etc/containers/containers.conf
-
-
-# Switch to the target user with reduced privileges
-USER 1000
-
-# Working directory for Tekton
-WORKDIR /home/tekton
 
