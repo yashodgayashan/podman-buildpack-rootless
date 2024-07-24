@@ -21,5 +21,4 @@ RUN dnf install -y fuse-overlayfs slirp4netns
 
 RUN dnf install -y https://kojipkgs.fedoraproject.org//packages/crun/1.8.7/1.fc38/x86_64/crun-1.8.7-1.fc38.x86_64.rpm
 
-RUN curn
 
